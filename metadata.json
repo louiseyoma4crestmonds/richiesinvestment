@@ -1,0 +1,6 @@
+{
+  "name": "Quantum Industrial Partnership - Investment & Wealth Management Platform",
+  "description": "Dynamic multi-asset investment portal offering Forex, Crypto, Energy, Real Estate, and Commodities portfolios with real-time analytics, user dashboards, and secure transaction workflows.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User profiles: Isolated and only readable/writable by the owner
+    match /users/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
+      allow list: if false;
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
+      allow update: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
+      allow delete: if false;
+
+      // User investments subcollection
+      match /investments/{investmentId} {
+        allow read: if isSignedIn() && request.auth.uid == userId && isValidId(investmentId);
+        allow create, update: if isSignedIn() && request.auth.uid == userId && isValidId(investmentId);
+        allow delete: if false;
+      }
+    }
+
+    // Investment plans: Publicly readable, admin only modification
+    match /investment_plans/{planId} {
+      allow read: if isValidId(planId);
+      allow write: if false;
+    }
+
+    // Transactions: Read only own transactions; creation validated to own userId
+    match /transactions/{transactionId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid && isValidId(transactionId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid && isValidId(transactionId);
+      allow update, delete: if false;
+    }
+
+    // Market Assets: Live rates and chart quotes are publicly readable
+    match /market_assets/{assetId} {
+      allow read: if isValidId(assetId);
+      allow write: if false;
+    }
+
+    // Platform statistics: Publicly readable platform stats
+    match /platform_stats/{statId} {
+      allow read: if isValidId(statId);
+      allow write: if false;
+    }
+
+    // Support tickets: Users can submit tickets
+    match /support_tickets/{ticketId} {
+      allow create: if isValidId(ticketId);
+      allow read, update, delete: if false;
+    }
+
+    // Testimonials: Publicly readable
+    match /testimonials/{testimonialId} {
+      allow read: if isValidId(testimonialId);
+      allow write: if false;
+    }
+
+    // Crypto Deposit Wallets: Publicly readable for deposits
+    match /deposit_wallets/{walletId} {
+      allow read: if isValidId(walletId);
+      allow write: if false;
+    }
+
+    // Trading Performance: Publicly readable live trading records
+    match /trading_performance/{recordId} {
+      allow read: if isValidId(recordId);
+      allow write: if false;
+    }
+
+    // User Notifications: Read/write for owner
+    match /notifications/{notifId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn();
+    }
+  }
+}

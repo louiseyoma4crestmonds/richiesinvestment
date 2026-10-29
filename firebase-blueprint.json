@@ -1,0 +1,171 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "User account details, balances, and referral tracking",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "balance": { "type": "number" },
+        "totalInvested": { "type": "number" },
+        "totalEarned": { "type": "number" },
+        "totalWithdrawn": { "type": "number" },
+        "referralCode": { "type": "string", "maxLength": 32 },
+        "referredBy": { "type": "string", "maxLength": 32 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["uid", "email", "balance"]
+    },
+    "investmentPlan": {
+      "title": "Investment Plan",
+      "description": "Available tiered investment packages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 100 },
+        "tier": { "type": "string", "maxLength": 50 },
+        "minDeposit": { "type": "number" },
+        "maxDeposit": { "type": "number" },
+        "dailyRoiPercent": { "type": "number" },
+        "durationDays": { "type": "number" },
+        "riskLevel": { "type": "string", "maxLength": 50 },
+        "capitalBack": { "type": "boolean" },
+        "status": { "type": "string", "maxLength": 30 },
+        "description": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "name", "minDeposit", "maxDeposit", "dailyRoiPercent", "durationDays"]
+    },
+    "userInvestment": {
+      "title": "User Investment",
+      "description": "Active or historical investment contract created by a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "planId": { "type": "string", "maxLength": 64 },
+        "planName": { "type": "string", "maxLength": 100 },
+        "amount": { "type": "number" },
+        "dailyEarnings": { "type": "number" },
+        "totalReturn": { "type": "number" },
+        "startDate": { "type": "string", "maxLength": 64 },
+        "endDate": { "type": "string", "maxLength": 64 },
+        "daysElapsed": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "completed", "cancelled"] }
+      },
+      "required": ["id", "userId", "planId", "amount", "status"]
+    },
+    "transaction": {
+      "title": "Transaction Record",
+      "description": "Deposit, withdrawal, referral or profit transaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["deposit", "withdrawal", "profit", "referral"] },
+        "amount": { "type": "number" },
+        "asset": { "type": "string", "maxLength": 32 },
+        "txHash": { "type": "string", "maxLength": 128 },
+        "status": { "type": "string", "enum": ["pending", "completed", "rejected"] },
+        "timestamp": { "type": "string", "maxLength": 64 },
+        "note": { "type": "string", "maxLength": 256 }
+      },
+      "required": ["id", "userId", "type", "amount", "asset", "status", "timestamp"]
+    },
+    "marketAsset": {
+      "title": "Market Asset",
+      "description": "Live market quotation for crypto, forex, commodities, and stocks",
+      "type": "object",
+      "properties": {
+        "symbol": { "type": "string", "maxLength": 32 },
+        "name": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "enum": ["crypto", "forex", "commodity", "stocks"] },
+        "price": { "type": "number" },
+        "change24h": { "type": "number" },
+        "high24h": { "type": "number" },
+        "low24h": { "type": "number" },
+        "volume": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["symbol", "name", "category", "price", "change24h"]
+    },
+    "platformStats": {
+      "title": "Platform Statistics",
+      "description": "Aggregated platform figures and performance indicators",
+      "type": "object",
+      "properties": {
+        "totalDeposited": { "type": "number" },
+        "totalWithdrawn": { "type": "number" },
+        "activeInvestors": { "type": "number" },
+        "countriesCount": { "type": "number" },
+        "runningDays": { "type": "number" }
+      },
+      "required": ["totalDeposited", "totalWithdrawn", "activeInvestors"]
+    },
+    "supportTicket": {
+      "title": "Support Ticket",
+      "description": "User customer support message or inquiry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 256 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["open", "in_progress", "resolved"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "email", "subject", "message", "status"]
+    },
+    "testimonial": {
+      "title": "Investor Testimonial",
+      "description": "Verified client review and feedback",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "author": { "type": "string", "maxLength": 100 },
+        "country": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "maxLength": 100 },
+        "rating": { "type": "number" },
+        "comment": { "type": "string", "maxLength": 1000 },
+        "date": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "author", "country", "rating", "comment"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "User profile with balance and account status"
+    },
+    "/investment_plans/{planId}": {
+      "schema": "investmentPlan",
+      "description": "Tiered investment packages offered by the platform"
+    },
+    "/users/{userId}/investments/{investmentId}": {
+      "schema": "userInvestment",
+      "description": "User investment contracts and yields"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "transaction",
+      "description": "Global and user financial transactions ledger"
+    },
+    "/market_assets/{assetId}": {
+      "schema": "marketAsset",
+      "description": "Market asset pricing, tickers, and trends"
+    },
+    "/platform_stats/{statId}": {
+      "schema": "platformStats",
+      "description": "Aggregated metrics for the platform"
+    },
+    "/support_tickets/{ticketId}": {
+      "schema": "supportTicket",
+      "description": "Customer contact submissions"
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "testimonial",
+      "description": "Client reviews and feedback"
+    }
+  }
+}
