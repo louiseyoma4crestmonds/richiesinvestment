@@ -69,7 +69,8 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
     'Netherlands',
     'Sweden',
     'Norway',
-    'Brazil'
+    'Brazil',
+    'India'
   ];
 
   const handleNextStep1 = (e: React.FormEvent) => {
